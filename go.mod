@@ -1,4 +1,4 @@
-module todo-backend
+module Todo-backend
 
 go 1.20
 
