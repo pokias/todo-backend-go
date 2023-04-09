@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -14,7 +15,13 @@ func noteCallHandler(w http.ResponseWriter, req *http.Request) {
 		//handle Get, get Notes
 		id := strings.TrimPrefix(req.URL.Path, "/note/")
 		if id != "" {
+			intId, err := strconv.Atoi(id)
+			if err != nil {
+				fmt.Println("error durin conversion to int")
+			}
 			//get posters notes
+			getAllNotesByPoster(intId)
+
 		} else {
 			//all notes
 			getAllNotes()
@@ -29,7 +36,14 @@ func noteCallHandler(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		createUpdateNote(n)
-		req.Response.StatusCode = 200
+
+		w.Header().Set("Content-Type", "application/json")
+		note := Note{
+			Note:   n.Note,
+			Id:     n.Id,
+			Poster: n.Poster,
+		}
+		json.NewEncoder(w).Encode(note)
 
 	case "DELETE":
 		//Handle deleting note

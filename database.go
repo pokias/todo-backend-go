@@ -8,12 +8,12 @@ import (
 )
 
 type Note struct {
-	Note   string
-	Id     string
-	Poster int
+	Note   string `json:"note"`
+	Id     string `json:"id"`
+	Poster int    `json:"poster"`
 }
 
-// globaali declaraatio?
+// global declaration?
 var schema = &memdb.DBSchema{
 	Tables: map[string]*memdb.TableSchema{
 		"note": {
@@ -41,6 +41,12 @@ var schema = &memdb.DBSchema{
 var db, err = memdb.NewMemDB(schema)
 
 func getAllNotes() []Note {
+
+	if err != nil {
+		//Failed to create db with schema
+		panic(err)
+	}
+
 	// Create read-only transaction
 	txn := db.Txn(false)
 	defer txn.Abort()
